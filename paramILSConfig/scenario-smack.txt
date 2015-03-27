@@ -1,0 +1,12 @@
+algo               = python smack-wrapper.py
+execdir            = .
+deterministic      = 1
+run_obj            = runtime
+overall_obj        = mean
+cutoff_time        = 5
+cutoff_length      = max
+tunerTimeout       = 30
+paramfile          = smack-params.txt
+outdir             = paramils-out
+instance_file      = smack-instance.txt
+test_instance_file = smack-instance.txt

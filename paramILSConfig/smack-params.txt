@@ -1,0 +1,2 @@
+-unroll {1,2,3,4,8,16,32} [1]
+-mem-mod {no-reuse,no-reuse-impls,reuse} [no-reuse-impls]
