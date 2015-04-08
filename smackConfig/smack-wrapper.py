@@ -40,7 +40,6 @@ def print_result(instanceName, output, runtime):
     try:
         result    = get_result(instanceName, output)
     except AttributeError as e:
-        print("here2", file=sys.stderr)
         print("###" + output + "###", file=sys.stderr)
         traceback.print_exc()
     runlength = -1
@@ -48,9 +47,26 @@ def print_result(instanceName, output, runtime):
     seed      = -1
     print("Result for ParamILS: %(result)s, %(runtime)f, %(runlength)d, %(best_sol)d, %(seed)d" % locals())
     print(output)
+    #print(output, file=sys.stderr)
 
 def collectVerifierOptions(addArgs):
-    return addArgs
+  allArgs = list()
+  verifierBoolSwitches = list()
+  ctr = 0
+  while ctr < len(addArgs):
+    boolSwitch = re.match(r'-CORRAL__bool__(.*)', addArgs[ctr])
+    if boolSwitch:
+      if addArgs[ctr+1]=="1":
+        verifierBoolSwitches.append("/" + boolSwitch.group(1))
+      ctr += 1
+    else:
+      allArgs.append(addArgs[ctr])
+    ctr += 1
+
+  if len(verifierBoolSwitches)!=0:
+    allArgs.append('--verifier-options=' + " ".join(verifierBoolSwitches))
+  #print(allArgs, file=sys.stderr)
+  return allArgs
 
 if __name__ == "__main__":
     instanceName = sys.argv[1]
