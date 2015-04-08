@@ -1,4 +1,4 @@
-algo               = python smack-wrapper.py
+algo               = python3 smack-wrapper.py
 execdir            = .
 deterministic      = 1
 run_obj            = runtime
