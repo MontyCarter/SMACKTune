@@ -1,9 +1,13 @@
+#!/usr/bin/python3
+
 import subprocess
 import sys
 import os
 import re
 import traceback
 import time
+
+print("here")
 
 ###Use SAT to indicate expected result matches actual result,
 ###Use UNSAT to indicate they did not match

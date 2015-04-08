@@ -1,9 +1,9 @@
-algo               = python3 smack-wrapper.py
+algo               = ./smack-wrapper.py
 execdir            = .
 deterministic      = 1
 run_obj            = runtime
-overall_obj        = mean
-cutoff_time        = 10
+overall_obj        = mean1000
+cutoff_time        = 15
 cutoff_length      = max
 tunerTimeout       = 60
 paramfile          = smack-params.txt
