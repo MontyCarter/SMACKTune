@@ -5,15 +5,25 @@ import re
 import traceback
 import time
 
-def get_result(output):
+###Use SAT to indicate expected result matches actual result,
+###Use UNSAT to indicate they did not match
+def get_result(instanceName, output):
+  #Get expected result
+  expected = True
+  if re.search(r'[fF]ail', instanceName) or re.search(r'[fF]alse', instanceName):
+    expected = False
+  #Get actual result
+  passed = False
   if re.search(r'[1-9]\d* time out|Z3 ran out of resources|z3 timed out', output):
     return 'TIMEOUT'
   elif re.search(r'[1-9]\d* verified, 0 errors?|no bugs', output):
-    return 'SAT'
+    passed = True
   elif re.search(r'0 verified, [1-9]\d* errors?|can fail', output):
-    return 'UNSAT'
+    passed = False
   else:
     return 'unknown'
+  #Return SAT if passed matched expected
+  return 'SAT' if passed==expected else 'UNSAT'
 
 def run(instanceName, timeLimit, addArgs):
     cmd = ['smackverify.py', instanceName]
@@ -24,11 +34,11 @@ def run(instanceName, timeLimit, addArgs):
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err  = p.communicate()
     output = (out+err).decode('utf-8')
-    return output, (time.time() - start)
+    return instanceName, output, (time.time() - start)
 
-def print_result(output, runtime):
+def print_result(instanceName, output, runtime):
     try:
-        result    = get_result(output)
+        result    = get_result(instanceName, output)
     except AttributeError as e:
         print("here2", file=sys.stderr)
         print("###" + output + "###", file=sys.stderr)

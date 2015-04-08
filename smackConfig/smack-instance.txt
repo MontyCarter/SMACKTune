@@ -1,9 +1,16 @@
 smack-benchmarks/struct_array.c
 smack-benchmarks/array1.c
+smack-benchmarks/array1_fail.c
 smack-benchmarks/array2.c
+smack-benchmarks/array2_fail.c
 smack-benchmarks/array3.c
+smack-benchmarks/array3_fail.c
 smack-benchmarks/array4.c
+smack-benchmarks/array4_fail.c
 smack-benchmarks/array.c
 smack-benchmarks/array_free1.c
+smack-benchmarks/array_free1_fail.c
 smack-benchmarks/array_free2.c
+smack-benchmarks/array_free2_fail.c
 smack-benchmarks/array_free.c
+smack-benchmarks/array_free_fail.c
