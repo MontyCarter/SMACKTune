@@ -1,0 +1,17 @@
+benchPart/array.c            0.5821425914764404 SAT
+benchPart/array1.c           0.7189297676086426 SAT
+benchPart/array1_fail.c      0.8090605735778809 SAT
+benchPart/array2.c           0.636371374130249  SAT
+benchPart/array2_fail.c      0.639066219329834  UNSAT
+benchPart/array3.c           0.660592794418335  SAT
+benchPart/array3_fail.c      0.7303471565246582 UNSAT
+benchPart/array4.c           0.8004162311553955 SAT
+benchPart/array4_fail.c      0.713341474533081  UNSAT
+benchPart/array_free.c       0.8151402473449707 SAT
+benchPart/array_free1.c      0.9750339984893799 SAT
+benchPart/array_free1_fail.c 1.035078763961792  UNSAT
+benchPart/array_free2.c      1.0671486854553223 SAT
+benchPart/array_free2_fail.c 1.0958471298217773 UNSAT
+benchPart/array_free_fail.c  0.8751728534698486 UNSAT
+benchPart/ase_example.c      0.8009297847747803 SAT
+benchPart/ase_example_fail.c 0.7886223793029785 UNSAT

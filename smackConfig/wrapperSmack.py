@@ -7,11 +7,10 @@ import re
 import traceback
 import time
 
-print("here")
 
 ###Use SAT to indicate expected result matches actual result,
 ###Use UNSAT to indicate they did not match
-def get_result(instanceName, output):
+def get_outcome(instanceName, output):
   #Get expected result
   expected = True
   if re.search(r'[fF]ail', instanceName) or re.search(r'[fF]alse', instanceName):
@@ -40,18 +39,23 @@ def run(instanceName, timeLimit, addArgs):
     output = (out+err).decode('utf-8')
     return instanceName, output, (time.time() - start)
 
-def print_result(instanceName, output, runtime):
+def get_result(instanceName, output, runtime):
     try:
-        result    = get_result(instanceName, output)
+        result    = get_outcome(instanceName, output)
     except AttributeError as e:
         print("###" + output + "###", file=sys.stderr)
         traceback.print_exc()
     runlength = -1
     best_sol  = -1
     seed      = -1
+
+    return output, result, runtime, runlength, best_sol, seed
+
+def print_result(output, result, runtime, runlength, best_sol, seed):
     print("Result for ParamILS: %(result)s, %(runtime)f, %(runlength)d, %(best_sol)d, %(seed)d" % locals())
     print(output)
     #print(output, file=sys.stderr)
+  
 
 def collectVerifierOptions(addArgs):
   allArgs = list()
@@ -77,5 +81,5 @@ if __name__ == "__main__":
     cutoffTime = int(float(sys.argv[3]))
     addArgs = sys.argv[6:]
     addArgs = collectVerifierOptions(addArgs)
-    print_result(*run(instanceName, cutoffTime, addArgs))
+    print_result(*get_result(*run(instanceName, cutoffTime, addArgs))) 
 
