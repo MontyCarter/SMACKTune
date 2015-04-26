@@ -5,7 +5,7 @@ import glob
 import os
 from wrapperSmack import *
 
-dfltTimeout = 30
+dfltTimeout = 60
 dfltArgs = ['--unroll', '12']
 
 
@@ -25,9 +25,9 @@ def genInstanceFile(folder):
         #track longest filename for printing alignment
         longestFile = longestFile if len(res[-1][0])<=longestFile else len(res[-1][0])
         longestFloat = longestFloat if len(str(res[-1][1]))<=longestFloat else len(str(res[-1][1]))
-        if res[-1][2] == "SAT":
+        if res[-1][2] == "CORRECT":
             satCnt += 1
-        elif res[-1][2] == "UNSAT":
+        elif res[-1][2] == "WRONG":
             unsatCnt += 1
         elif res[-1][2] == "TIMEOUT":
             timeoutCnt += 1
@@ -44,8 +44,8 @@ def genInstanceFile(folder):
                       inst[2])
 
     print("Summary:")
-    print("\tSAT Count:\t" + str(satCnt))
-    print("\tUNSAT Count:\t" + str(unsatCnt))
+    print("\tCORRECT Count:\t" + str(satCnt))
+    print("\tWRONG Count:\t" + str(unsatCnt))
     print("\tTIMEOUT Count:\t" + str(timeoutCnt))
     print("\tTotal Runtime:\t" + str(totalTime))
 

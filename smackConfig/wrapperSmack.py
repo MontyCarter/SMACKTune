@@ -26,7 +26,7 @@ def get_outcome(instanceName, output):
   else:
     return 'unknown'
   #Return SAT if passed matched expected
-  return 'SAT' if passed==expected else 'UNSAT'
+  return 'CORRECT' if passed==expected else 'WRONG'
 
 def run(instanceName, timeLimit, addArgs):
     cmd = ['smackverify.py', instanceName]
