@@ -805,7 +805,7 @@ def combinationOfObjectiveFunctions(algo, obj_function, instanceObjectives, with
 		avg = sum/instanceObjectives.length
 		return 10 ** avg
 	end
-	if obj_function == "geomean10"
+	if obj_function == "geomean8"
 		sum=0
 #		puts instanceObjectives
 		for obj in instanceObjectives
