@@ -34,9 +34,11 @@ echo "============================"
 echo "| Running ParamILS         |"
 echo "============================"
 echo
-ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 0 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 &
-ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 1 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 &
-ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 2 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 &
-ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 3 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 &
+ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 0 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 -pruning 0 &
+ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 1 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 -pruning 0 &
+ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 2 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 -pruning 0 &
+ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 3 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 -pruning 0 &
+ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 4 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 -pruning 0 &
+ruby ../paramils2.3.7-source/param_ils_2_3_run.rb -numRun 5 -userunlog 1 -scenariofile scenarioSmack.txt -validN 1000 -pruning 0 &
 
 cd ..

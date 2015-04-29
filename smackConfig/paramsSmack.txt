@@ -1,6 +1,6 @@
--unroll {1,2,3,4,8,16,32} [1]
+-unroll {1,2,3,4,8,12,16,32} [12]
 -mem-mod {no-reuse,no-reuse-impls,reuse} [no-reuse-impls]
--verifier {corral} [corral]
+-verifier {corral,boogie} [corral]
 CORRAL__bool__staticInlining {0,1} [0]
 CORRAL__bool__trackAllVars {0,1} [0]
 

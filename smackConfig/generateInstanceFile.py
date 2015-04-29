@@ -5,7 +5,7 @@ import glob
 import os
 from wrapperSmack import *
 
-dfltTimeout = 60
+dfltTimeout = 120
 dfltArgs = ['--unroll', '12']
 
 
