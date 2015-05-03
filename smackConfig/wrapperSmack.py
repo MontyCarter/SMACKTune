@@ -29,9 +29,11 @@ def get_outcome(instanceName, output):
   return 'CORRECT' if passed==expected else 'WRONG'
 
 def run(instanceName, timeLimit, addArgs):
+    curTime = str(time.time())
     cmd = ['smackverify.py', instanceName]
     cmd += ['--time-limit', str(timeLimit)]
-    cmd += ['-o', instanceName + '.bpl']
+    cmd += ['-o', instanceName + '_' + curTime + '.bpl']
+    cmd += ['--bc', instanceName + '_' + curTime + '.bc']
     cmd += addArgs
     start = time.time()
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
