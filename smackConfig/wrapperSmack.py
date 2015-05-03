@@ -30,15 +30,27 @@ def get_outcome(instanceName, output):
 
 def run(instanceName, timeLimit, addArgs):
     curTime = str(time.time())
+    oFilename = instanceName + '_' + curTime + '.bpl'
+    bcFilename = instanceName + '_' + curTime + '.bc'
     cmd = ['smackverify.py', instanceName]
     cmd += ['--time-limit', str(timeLimit)]
-    cmd += ['-o', instanceName + '_' + curTime + '.bpl']
-    cmd += ['--bc', instanceName + '_' + curTime + '.bc']
+    cmd += ['-o', oFilename]
+    cmd += ['--bc', bcFilename]
     cmd += addArgs
     start = time.time()
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err  = p.communicate()
     output = (out+err).decode('utf-8')
+
+    #Clean up bpl and bc files so we don't collect too many
+    try:
+      os.remove(oFilename)
+    except:
+      pass
+    try:
+      os.remove(bcFilename)
+    except:
+      pass
     #print("\n",file=sys.stderr)
     #print(output,file=sys.stderr)
     #print("\n",file=sys.stderr)
