@@ -39,6 +39,9 @@ def run(instanceName, timeLimit, addArgs):
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err  = p.communicate()
     output = (out+err).decode('utf-8')
+    #print("\n",file=sys.stderr)
+    #print(output,file=sys.stderr)
+    #print("\n",file=sys.stderr)
     return instanceName, output, (time.time() - start)
 
 def get_result(instanceName, output, runtime):
@@ -61,21 +64,53 @@ def print_result(output, result, runtime, runlength, best_sol, seed):
 
 def collectVerifierOptions(addArgs):
   allArgs = list()
-  verifierBoolSwitches = list()
+  verifierOptions = list()
   ctr = 0
   while ctr < len(addArgs):
-    boolSwitch = re.match(r'-CORRAL__bool__(.*)', addArgs[ctr])
-    if boolSwitch:
-      if addArgs[ctr+1]=="1":
-        verifierBoolSwitches.append("/" + boolSwitch.group(1))
+    #If we match this regex, we're getting a nested param.  Take it apart, and reconstruct it
+    #  appropriately
+    #First group is destination, second group is type, third group is target nested parameter
+    nestedArg = re.match(r'-(CORRAL|BOOGIE|Z3)(__bool__|__int__|__float__)(.*)', addArgs[ctr])
+    #boolSwitch = re.match(r'-CORRAL__bool__(.*)', addArgs[ctr])
+    if nestedArg:
+      if nestedArg.group(1) == 'CORRAL':
+        if nestedArg.group(2) == '__bool__':
+          if addArgs[ctr+1] == '1':
+            verifierOptions.append('/' + nestedArg.group(3))
+        else:
+          raise ("Unsupported Corral parameter type: " + nestedArg.group(2))
+
+      if nestedArg.group(1) == 'BOOGIE':
+        if nestedArg.group(2) == '__bool__':
+          if addArgs[ctr+1] == '1':
+            verifierOptions.append('/' + nestedArg.group(3))
+        else:
+          raise ("Unsupported Boogie parameter type: " + nestedArg.group(2))
+
+      if nestedArg.group(1) == 'Z3':
+        if nestedArg.group(2) == '__bool__':
+          if (addArgs[ctr+1] == '1' or addArgs[ctr+1] == '0'):
+            verifierOptions.append('/z3opt:' + nestedArg.group(3) + 
+                                   "=" + ("true" if addArgs[ctr+1] == '1' else "false"))
+          else:
+            raise "Z3 __bool__ options must be either 0 or 1"
+        elif nestedArg.group(2) == '__int__':
+          verifierOptions.append('/z3opt:' + nestedArg.group(3) + '=' + addArgs[ctr+1])
+
+        else:
+          raise ("Unsupported Z3 parameter type: " + nestedArg.group(2))
+
+      #Pull an extra param off the list, since we don't want this params value to remain on SMACK params
       ctr += 1
     else:
       allArgs.append(addArgs[ctr])
     ctr += 1
 
-  if len(verifierBoolSwitches)!=0:
-    allArgs.append('--verifier-options=' + " ".join(verifierBoolSwitches))
+  if len(verifierOptions)!=0:
+    allArgs.append('--verifier-options=' + " ".join(verifierOptions))
+  #print("\n", file=sys.stderr)
   #print(allArgs, file=sys.stderr)
+  #print("\n", file=sys.stderr)
   return allArgs
 
 if __name__ == "__main__":
