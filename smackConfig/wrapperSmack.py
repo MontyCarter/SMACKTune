@@ -1,129 +1,14 @@
 #!/usr/bin/python3
 
-import subprocess
 import sys
-import os
-import re
-import traceback
-import time
+from helperSmack import *
 
-
-###Use SAT to indicate expected result matches actual result,
-###Use UNSAT to indicate they did not match
-def get_outcome(instanceName, output):
-  #Get expected result
-  expected = True
-  if re.search(r'[fF]ail', instanceName) or re.search(r'[fF]alse', instanceName):
-    expected = False
-  #Get actual result
-  passed = False
-  if re.search(r'[1-9]\d* time out|Z3 ran out of resources|z3 timed out', output):
-    return 'TIMEOUT'
-  elif re.search(r'[1-9]\d* verified, 0 errors?|no bugs', output):
-    passed = True
-  elif re.search(r'0 verified, [1-9]\d* errors?|can fail', output):
-    passed = False
-  else:
-    return 'unknown'
-  #Return SAT if passed matched expected
-  return 'CORRECT' if passed==expected else 'WRONG'
-
-def run(instanceName, timeLimit, addArgs):
-    curTime = str(time.time())
-    oFilename = instanceName + '_' + curTime + '.bpl'
-    bcFilename = instanceName + '_' + curTime + '.bc'
-    cmd = ['smackverify.py', instanceName]
-    cmd += ['--time-limit', str(timeLimit)]
-    cmd += ['-o', oFilename]
-    cmd += ['--bc', bcFilename]
-    cmd += addArgs
-    start = time.time()
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err  = p.communicate()
-    output = (out+err).decode('utf-8')
-
-    #Clean up bpl and bc files so we don't collect too many
-    try:
-      os.remove(oFilename)
-    except:
-      pass
-    try:
-      os.remove(bcFilename)
-    except:
-      pass
-    #print("\n",file=sys.stderr)
-    #print(output,file=sys.stderr)
-    #print("\n",file=sys.stderr)
-    return instanceName, output, (time.time() - start)
-
-def get_result(instanceName, output, runtime):
-    try:
-        result    = get_outcome(instanceName, output)
-    except AttributeError as e:
-        print("###" + output + "###", file=sys.stderr)
-        traceback.print_exc()
-    runlength = -1
-    best_sol  = -1
-    seed      = -1
-
-    return output, result, runtime, runlength, best_sol, seed
-
-def print_result(output, result, runtime, runlength, best_sol, seed):
-    print("Result for ParamILS: %(result)s, %(runtime)f, %(runlength)d, %(best_sol)d, %(seed)d" % locals())
+def printResultForParamils(result):
+    (output, outcome, runtime, runlength, best_sol, seed) = result
+    #Print paramils result string
+    print("Result for ParamILS: %(outcome)s, %(runtime)f, %(runlength)d, %(best_sol)d, %(seed)d" % locals())
+    #Print smack output
     print(output)
-    #print(output, file=sys.stderr)
-  
-
-def collectVerifierOptions(addArgs):
-  allArgs = list()
-  verifierOptions = list()
-  ctr = 0
-  while ctr < len(addArgs):
-    #If we match this regex, we're getting a nested param.  Take it apart, and reconstruct it
-    #  appropriately
-    #First group is destination, second group is type, third group is target nested parameter
-    nestedArg = re.match(r'-(CORRAL|BOOGIE|Z3)(__bool__|__int__|__float__)(.*)', addArgs[ctr])
-    #boolSwitch = re.match(r'-CORRAL__bool__(.*)', addArgs[ctr])
-    if nestedArg:
-      if nestedArg.group(1) == 'CORRAL':
-        if nestedArg.group(2) == '__bool__':
-          if addArgs[ctr+1] == '1':
-            verifierOptions.append('/' + nestedArg.group(3))
-        else:
-          raise ("Unsupported Corral parameter type: " + nestedArg.group(2))
-
-      if nestedArg.group(1) == 'BOOGIE':
-        if nestedArg.group(2) == '__bool__':
-          if addArgs[ctr+1] == '1':
-            verifierOptions.append('/' + nestedArg.group(3))
-        else:
-          raise ("Unsupported Boogie parameter type: " + nestedArg.group(2))
-
-      if nestedArg.group(1) == 'Z3':
-        if nestedArg.group(2) == '__bool__':
-          if (addArgs[ctr+1] == '1' or addArgs[ctr+1] == '0'):
-            verifierOptions.append('/z3opt:' + nestedArg.group(3) + 
-                                   "=" + ("true" if addArgs[ctr+1] == '1' else "false"))
-          else:
-            raise "Z3 __bool__ options must be either 0 or 1"
-        elif nestedArg.group(2) == '__int__':
-          verifierOptions.append('/z3opt:' + nestedArg.group(3) + '=' + addArgs[ctr+1])
-
-        else:
-          raise ("Unsupported Z3 parameter type: " + nestedArg.group(2))
-
-      #Pull an extra param off the list, since we don't want this params value to remain on SMACK params
-      ctr += 1
-    else:
-      allArgs.append(addArgs[ctr])
-    ctr += 1
-
-  if len(verifierOptions)!=0:
-    allArgs.append('--verifier-options=' + " ".join(verifierOptions))
-  #print("\n", file=sys.stderr)
-  #print(allArgs, file=sys.stderr)
-  #print("\n", file=sys.stderr)
-  return allArgs
 
 if __name__ == "__main__":
     #Args:
@@ -140,5 +25,6 @@ if __name__ == "__main__":
     addArgs = sys.argv[6:]
     #generated nested args, for --verifier-options-"XXX"
     addArgs = collectVerifierOptions(addArgs)
-    print_result(*get_result(*run(instanceName, cutoffTime, addArgs))) 
+    result = runSmack(instanceName, cutoffTime, addArgs)
+    printResultForParamils(result)
 
