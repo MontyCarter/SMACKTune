@@ -18,7 +18,7 @@ def genInstanceFile(fileList, timeout=dfltTimeout, addArgs=dfltArgs):
     stats = getBatchStats(res)
     formattedStats = formatBatchStatSummary(stats)
     print(formattedStats)
-    writeBatchFile('instanceSmackStats.txt',formattedStats)
+    writeBatchFile('instanceStats.txt',formattedStats)
     return formatBatchFile(res)
 
 if __name__ == '__main__':
