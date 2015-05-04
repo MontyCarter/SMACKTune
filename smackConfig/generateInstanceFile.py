@@ -16,7 +16,9 @@ def getFileList(folder):
 def genInstanceFile(fileList, timeout=dfltTimeout, addArgs=dfltArgs):
     res = batchRunSmack(fileList, timeout, addArgs, showProgress=True)
     stats = getBatchStats(res)
-    print(formatBatchStatSummary(stats))
+    formattedStats = formatBatchStatSummary(stats)
+    print(formattedStats)
+    writeBatchFile('instanceSmackStats.txt',formattedStats)
     return formatBatchFile(res)
 
 if __name__ == '__main__':
